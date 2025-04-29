@@ -6,9 +6,9 @@ services:
     ports:
       - "5000:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-    depends_on:
-      - db
+      ASPNETCORE_ENVIRONMENT: Production    
+    volumes:
+      - ./backend/expenses.db:/app/expenses.db  
 
   frontend:
     build: ./frontend
@@ -16,12 +16,3 @@ services:
       - "3000:80"
     depends_on:
       - backend
-
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER=postgres
-      POSTGRES_PASSWORD=yourpassword
-      POSTGRES_DB=expensetrackerdb
-    ports:
-      - "5432:5432"
