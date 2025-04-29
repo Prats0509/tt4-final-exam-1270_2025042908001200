@@ -1,48 +1,78 @@
 <template>
-  <div>
-    <h2>Expense List</h2>
+  <div class="container py-4">
+    <h2 class="h3 mb-4">Expense List</h2>
 
-    <!-- Form for creating or editing an expense -->
-    <form @submit.prevent="isEditing ? updateExpense() : createExpense()">
-      <input
-        v-model.trim="form.name"
-        type="text"
-        placeholder="Expense name"
-        required
-      />
-      <input
-        v-model.number="form.amount"
-        type="number"
-        placeholder="Amount"
-        required
-      />
-      <input
-        v-model.trim="form.category"
-        type="text"
-        placeholder="Category"
-        required
-      />
-      <input
-        v-model.trim="form.description"
-        type="text"
-        placeholder="Description"
-        required
-      />
-      <button type="submit">
-        {{ isEditing ? 'Update' : 'Add' }} Expense
-      </button>
-      <button v-if="isEditing" type="button" @click="cancelEdit()">
-        Cancel
-      </button>
+    <!-- Create / Edit form -->
+    <form @submit.prevent="isEditing ? updateExpense() : createExpense()"
+          class="row gy-2 gx-3 align-items-center mb-5">
+
+      <div class="col-12">
+        <input v-model.trim="form.name"
+               class="form-control"
+               placeholder="Expense name"
+               required />
+      </div>
+
+      <div class="col-12 col-sm-6">
+        <input v-model.number="form.amount" type="number"
+               class="form-control"
+               placeholder="Amount"
+               required />
+      </div>
+
+      <div class="col-12 col-sm-6">
+        <input v-model.trim="form.category"
+               class="form-control"
+               placeholder="Category"
+               required />
+      </div>
+
+      <div class="col-12">
+        <input v-model.trim="form.description"
+               class="form-control"
+               placeholder="Description"
+               required />
+      </div>
+
+      <div class="col-12 d-flex gap-2">
+        <button type="submit"
+                class="btn btn-primary flex-grow-1">
+          {{ isEditing ? 'Update' : 'Add' }} Expense
+        </button>
+        <button v-if="isEditing"
+                type="button"
+                class="btn btn-secondary flex-grow-1"
+                @click="cancelEdit">
+          Cancel
+        </button>
+      </div>
     </form>
 
-    <!-- List of expenses with Edit/Delete actions -->
-    <ul>
-      <li v-for="expense in expenses" :key="expense.id">
-        {{ expense.name }} — ${{ expense.amount }}
-        ({{ expense.category }} • {{ expense.description }})
-        <button @click="editExpense(expense)">Edit</button>
-        <button @click="deleteExpense(expense.id)">Delete</button>
+    <!-- List of expenses -->
+    <ul class="list-group">
+      <li v-for="e in expenses"
+          :key="e.id"
+          class="list-group-item d-flex justify-content-between align-items-start">
+
+        <div class="me-3">
+          <div class="fw-bold">
+            {{ e.name }} — ${{ e.amount }}
+          </div>
+          <small class="text-muted">
+            {{ e.category }} • {{ e.description }}
+          </small>
+        </div>
+
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-primary"
+                  @click="editExpense(e)">
+            Edit
+          </button>
+          <button class="btn btn-outline-danger"
+                  @click="deleteExpense(e.id)">
+            Delete
+          </button>
+        </div>
       </li>
     </ul>
   </div>
@@ -56,14 +86,18 @@ export default {
   data() {
     return {
       expenses: [],
-      form: { name: '', amount: null, category: '', description: '' },
+      form: {
+        name: '', amount: null, category: '', description: ''
+      },
       isEditing: false,
-      editingId: null,
+      editingId: null
     };
   },
+
   async mounted() {
-    await this.fetchExpenses();            // initial load
+    await this.fetchExpenses();        // initial load
   },
+
   methods: {
     /* ---------- shared ---------- */
     async fetchExpenses() {
@@ -74,17 +108,17 @@ export default {
     /* ---------- CREATE ---------- */
     async createExpense() {
       await ExpenseService.addExpense(this.form);
-      await this.fetchExpenses();          // auto-refresh
+      await this.fetchExpenses();      // refresh list
       this.resetForm();
     },
 
     /* ---------- UPDATE ---------- */
     async updateExpense() {
-      await ExpenseService.updateExpense(this.editingId, {
-        ...this.form,
-        id: this.editingId,
-      });
-      await this.fetchExpenses();          // auto-refresh
+      await ExpenseService.updateExpense(
+        this.editingId,
+        { ...this.form, id: this.editingId }
+      );
+      await this.fetchExpenses();      // refresh list
       this.cancelEdit();
     },
 
@@ -92,18 +126,18 @@ export default {
     async deleteExpense(id) {
       if (!confirm('Delete this expense?')) return;
       await ExpenseService.deleteExpense(id);
-      await this.fetchExpenses();          // auto-refresh
+      await this.fetchExpenses();      // refresh list
     },
 
     /* ---------- helpers ---------- */
-    editExpense(expense) {
+    editExpense(e) {
       this.isEditing = true;
-      this.editingId = expense.id;
+      this.editingId = e.id;
       this.form = {
-        name: expense.name,
-        amount: expense.amount,
-        category: expense.category,
-        description: expense.description,
+        name: e.name,
+        amount: e.amount,
+        category: e.category,
+        description: e.description
       };
     },
 
@@ -114,20 +148,14 @@ export default {
     },
 
     resetForm() {
-      this.form = { name: '', amount: null, category: '', description: '' };
-    },
-  },
+      this.form = {
+        name: '', amount: null, category: '', description: ''
+      };
+    }
+  }
 };
 </script>
 
 <style scoped>
-form {
-  margin-bottom: 1em;
-}
-form input {
-  margin-right: 0.5em;
-}
-button {
-  margin-left: 0.5em;
-}
+
 </style>
