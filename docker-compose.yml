@@ -2,16 +2,20 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "5000:80"
+      - "5086:5086"               # host 5086  →  container 5086
     environment:
-      ASPNETCORE_ENVIRONMENT: Production    
+      ASPNETCORE_ENVIRONMENT: Production
     volumes:
       - ./backend/expenses.db:/app/expenses.db  
 
   frontend:
-    build: ./frontend
+    build:
+      context: .                  
+      dockerfile: ./Dockerfile   
     ports:
       - "3000:80"
     depends_on:
