@@ -1,5 +1,3 @@
 bin/
 obj/
-*.db
-*.sqlite
-appsettings.Development.json
+
