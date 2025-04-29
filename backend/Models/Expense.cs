@@ -9,7 +9,7 @@ namespace backend.Models
         public int ID { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public decimal Amount { get; set; }
@@ -18,6 +18,6 @@ namespace backend.Models
         public DateTime Date { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public string? Category { get; set; }
     }
 }

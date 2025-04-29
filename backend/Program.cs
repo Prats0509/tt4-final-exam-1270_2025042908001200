@@ -21,6 +21,6 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
